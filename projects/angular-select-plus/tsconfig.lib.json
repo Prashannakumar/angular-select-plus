@@ -5,10 +5,18 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/lib",
     "declaration": true,
-    "declarationMap": true,
     "inlineSources": true,
-    "types": []
+    "types": ["node"],
+		"lib": ["ES2022", "dom", "esnext"]
   },
+  "angularCompilerOptions": {
+		"compilationMode": "partial",
+		"skipTemplateCodegen": true,
+		"strictMetadataEmit": true,
+		"fullTemplateTypeCheck": true,
+		"strictInjectionParameters": true,
+		"enableResourceInlining": true
+	},
   "exclude": [
     "**/*.spec.ts"
   ]

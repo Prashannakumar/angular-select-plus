@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+// import "node_modules/@ng-select/ng-select/themes/default.theme.css";
 
 @Component({
   selector: 'lib-angular-select-plus',
   standalone: true,
   imports: [FormsModule, CommonModule, NgSelectModule],
-  template: `
+  template: `<p>custom-ng-select</p>
     <ng-select
       class="custom-ng-select"
       id="{{placeholder}}"
       [items]="items$"
-      bindLabel="name"
-      bindValue="id"
+      [bindLabel]="bindLabel"
+      [bindValue]="bindValue"
       [hideSelected]="false"
       [multiple]="true"
       [minTermLength]="1"
@@ -25,7 +26,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     >
       <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
         <ng-template #lessSelected>
-          <div class="ng-value" *ngFor="let item of items | slice : 0 : 4">
+          <div class="ng-value" *ngFor="let item of items | slice : 0 : displayQuantity">
             <span class="ng-value-label">{{ getValue(item) }}</span>
             <span
               class="ng-value-icon right"
@@ -34,8 +35,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
               >×</span
             >
           </div>
-          <div class="ng-value" *ngIf="items.length > 4">
-            <span class="ng-value-label">{{ items.length - 4 }} more...</span>
+          <div class="ng-value" *ngIf="items.length > displayQuantity">
+            <span class="ng-value-label">{{ items.length - displayQuantity }} more...</span>
           </div>
         </ng-template>
 
@@ -66,39 +67,30 @@ import { NgSelectModule } from '@ng-select/ng-select';
     </ng-select>
 
   `,
-  styles: `
-    .custom-ng-select {
-      .ng-dropdown-panel {
-        .ng-dropdown-panel-items {
-          .ng-option {
-            border-bottom: 1px solid #5ca8db95;
-            &.ng-option-marked {
-              background-color: #a31515;
-              color: white;
-              font-weight: bold;
-              .cus_phone,
-              .cus_pport > div:first-child,
-              .cus_eid > div:first-child {
-                color: white;
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-  encapsulation: ViewEncapsulation.ShadowDom,
+  styleUrls: ['./angular-select-plus.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 
 })
-export class AngularSelectPlusComponent {
+export class AngularSelectPlusComponent implements OnChanges {
   @Input('items') items$: any[] | null = null;
+  @Input() bindLabel: string = 'label';
+  @Input() bindValue: string = 'value';
+  @Input() displayQuantity: number = 4;
   @Input() placeholder: string = '';
   @Output() selectedValChange = new EventEmitter<any[] | null>();
   @Input() selectedVal: any[] | null = null;
   @Output() onChange = new EventEmitter();
 
+  constructor(){
+    
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // this.bindLabel = this.bindLabel || 'label';
+  }
+
   getValue(item: any) {
-    return item.name;
+    return item[this.bindLabel];
   }
   onChanges() {
     this.selectedValChange.emit(this.selectedVal);
@@ -107,7 +99,7 @@ export class AngularSelectPlusComponent {
 
   getCheckVal(event: any) {
     if (event.target.checked) {
-      this.selectedVal = this.items$ && this.items$.map((x: any) => x.id);
+      this.selectedVal = this.items$ && this.items$.map((x: any) => this.bindValue? x[this.bindValue]: x[this.bindLabel]);
     } else {
       this.selectedVal = [];
     }

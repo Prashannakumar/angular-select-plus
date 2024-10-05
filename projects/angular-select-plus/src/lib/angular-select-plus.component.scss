@@ -1,0 +1,25 @@
+// @import "@ng-select/ng-select/themes/default.theme.css";
+// @import 'node_modules/@ng-select/ng-select/themes/default.theme.css';
+
+// @import "~@ng-select/ng-select/themes/default.theme.css";
+
+
+.custom-ng-select {
+    .ng-dropdown-panel {
+      .ng-dropdown-panel-items {
+        .ng-option {
+          border-bottom: 1px solid #5ca8db95;
+          &.ng-option-marked {
+            background-color: #a31515;
+            color: white;
+            font-weight: bold;
+            .cus_phone,
+            .cus_pport > div:first-child,
+            .cus_eid > div:first-child {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
